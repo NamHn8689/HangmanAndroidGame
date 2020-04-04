@@ -2,23 +2,39 @@ package com.example.hangmanandroidgame;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class Main2Activity extends Activity implements View.OnClickListener {
+    String s = "";
+
+    String input;
     ImageView imageView;
     TextView tvQs;
     TextView tvAns;
-    String question ="Guess the Programming Language ?";
+    String question = "Guess the Programming Language ?";
+    String answer = "javascript";
+    char[] answerToCharArr = answer.toCharArray();
+//    ArrayList<QA> listQA;
 
-    ArrayList<QA> listQA;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        imageView = findViewById(R.id.imgHang);
+        tvQs = findViewById(R.id.tvQs);
+        tvAns = findViewById(R.id.tvAns);
+
+        for (int i = 0; i < answer.length(); i++) {
+            s += "_";
+        }
+
+        tvQs.setText(question);
+        tvAns.setText(s);
 
         //32button
         int[] idButton = {R.id.btnA, R.id.btnB, R.id.btnC, R.id.btnD, R.id.btnE, R.id.btnF, R.id.btnG, R.id.btnH,
@@ -29,27 +45,40 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             v.setOnClickListener(this);
         }
 
-        imageView = findViewById(R.id.imgHang);
-        tvQs = findViewById(R.id.tvQs);
-        tvAns = findViewById(R.id.tvAns);
-
-        listQA = new ArrayList<>();
-        listQA.add(new QA("Guess the Programming Language","java"));
-        listQA.add(new QA("Guess the Programming Language","javascript"));
-        listQA.add(new QA("Guess the Programming Language","kotlin"));
-        listQA.add(new QA("Guess the Programming Language","python"));
-        listQA.add(new QA("Guess the Programming Language","c"));
-        listQA.add(new QA("Guess the Programming Language","ruby"));
-        listQA.add(new QA("Guess the Programming Language","golang"));
-        listQA.add(new QA("Guess the Programming Language","php"));
-        listQA.add(new QA("Guess the Programming Language","dart"));
-        listQA.add(new QA("Guess the Programming Language","typescript"));
-        listQA.add(new QA("Guess the Programming Language","csharp"));
-
-        tvQs.setText(question);
 
     }
+
     public void onClick(View v) {
-        v.getId();
+        input = ((Button) v).getText().toString();
+        if (check())
+            updateAnsText();
+        else
+            updateImg();
+
+    }
+
+    public boolean check() {
+        if (answer.indexOf(input) != -1)
+            return true;
+        else return false;
+    }
+
+    public void updateAnsText() {
+        String[] ansArr = answer.split("");
+        String[] sArr = s.split("");
+        for (int i = 0; i <= answer.length(); i++)
+            if (ansArr[i].equals(input)){
+                sArr[i] = input;
+            }
+        System.out.println(sArr[3]);
+        s="";
+        for(String i:sArr){
+            s += i;
+        }
+        tvAns.setText(s);
+    }
+
+    public void updateImg() {
+
     }
 }
