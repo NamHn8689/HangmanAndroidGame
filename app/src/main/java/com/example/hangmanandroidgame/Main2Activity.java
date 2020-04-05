@@ -24,7 +24,6 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     TableLayout mLine3;
     Button mResetButton;
 
-
 //    ArrayList<QA> listQA;
 
     @Override
@@ -48,6 +47,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         for (int i = 0; i < answer.length(); i++) {
             s += "_";
         }
+        final String ss = s;
 
         tvQs.setText(question);
         tvAns.setText(s);
@@ -61,14 +61,33 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             v.setOnClickListener(this);
         }
 
+        mResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timeFalse = 0;
+                mImgHang.setImageLevel(timeFalse);
+                
+                s = ss;
+                tvAns.setText(s);
 
+                mImgHangLose.setVisibility(View.INVISIBLE);
+                mResetButton.setVisibility(View.INVISIBLE);
+
+                tvQs.setVisibility(View.VISIBLE);
+                tvAns.setVisibility(View.VISIBLE);
+                mLine1.setVisibility(View.VISIBLE);
+                mLine2.setVisibility(View.VISIBLE);
+                mLine3.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void onClick(View v) {
         input = ((Button) v).getText().toString();
-        if (check())
+        if (check()) {
             updateAnsText();
-        else
+
+        } else
             updateImg();
     }
 
@@ -99,13 +118,14 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     }
 
     public void whenLose() {
+        tvAns.setText(answer);
+
         mImgHangLose.setVisibility(View.VISIBLE);
         mResetButton.setVisibility(View.VISIBLE);
+
         tvQs.setVisibility(View.INVISIBLE);
-        tvAns.setVisibility(View.INVISIBLE);
         mLine1.setVisibility(View.INVISIBLE);
         mLine2.setVisibility(View.INVISIBLE);
         mLine3.setVisibility(View.INVISIBLE);
-
     }
 }

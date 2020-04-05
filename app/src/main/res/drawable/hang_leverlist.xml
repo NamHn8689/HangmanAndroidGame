@@ -19,4 +19,5 @@
     <item
         android:drawable="@drawable/lose"
         android:maxLevel="6"></item>
+
 </level-list>

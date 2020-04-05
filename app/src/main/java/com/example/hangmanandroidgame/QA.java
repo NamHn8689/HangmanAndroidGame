@@ -19,8 +19,6 @@
 //}
 
 
-
-
 //        listQA = new ArrayList<>();
 //        listQA.add(new QA("Guess the Programming Language","java"));
 //        listQA.add(new QA("Guess the Programming Language","javascript"));
