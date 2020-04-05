@@ -2,22 +2,29 @@ package com.example.hangmanandroidgame;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class Main2Activity extends Activity implements View.OnClickListener {
     String s = "";
-
     String input;
-    ImageView imageView;
-    TextView tvQs;
-    TextView tvAns;
     String question = "Guess the Programming Language ?";
     String answer = "javascript";
-    char[] answerToCharArr = answer.toCharArray();
+    int timeFalse = 0;
+
+    ImageView mImgHang;
+    ImageView mImgHangLose;
+    TextView tvQs;
+    TextView tvAns;
+    TableLayout mLine1;
+    TableLayout mLine2;
+    TableLayout mLine3;
+    Button mResetButton;
+
+
 //    ArrayList<QA> listQA;
 
     @Override
@@ -25,9 +32,18 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        imageView = findViewById(R.id.imgHang);
+        mImgHang = findViewById(R.id.imgHang);
+        mImgHangLose = findViewById(R.id.imgHangLose);
+
+        mLine1 = findViewById(R.id.line1);
+        mLine2 = findViewById(R.id.line2);
+        mLine3 = findViewById(R.id.line3);
+
         tvQs = findViewById(R.id.tvQs);
         tvAns = findViewById(R.id.tvAns);
+
+        mResetButton = findViewById(R.id.btnReset);
+
 
         for (int i = 0; i < answer.length(); i++) {
             s += "_";
@@ -54,31 +70,42 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             updateAnsText();
         else
             updateImg();
-
     }
 
     public boolean check() {
-        if (answer.indexOf(input) != -1)
-            return true;
-        else return false;
+        return answer.indexOf(input) != -1;
     }
 
     public void updateAnsText() {
         String[] ansArr = answer.split("");
         String[] sArr = s.split("");
         for (int i = 0; i <= answer.length(); i++)
-            if (ansArr[i].equals(input)){
+            if (ansArr[i].equals(input)) {
                 sArr[i] = input;
             }
         System.out.println(sArr[3]);
-        s="";
-        for(String i:sArr){
+        s = "";
+        for (String i : sArr) {
             s += i;
         }
         tvAns.setText(s);
     }
 
     public void updateImg() {
+        timeFalse++;
+        mImgHang.setImageLevel(timeFalse);
+        if (timeFalse == 6)
+            whenLose();
+    }
+
+    public void whenLose() {
+        mImgHangLose.setVisibility(View.VISIBLE);
+        mResetButton.setVisibility(View.VISIBLE);
+        tvQs.setVisibility(View.INVISIBLE);
+        tvAns.setVisibility(View.INVISIBLE);
+        mLine1.setVisibility(View.INVISIBLE);
+        mLine2.setVisibility(View.INVISIBLE);
+        mLine3.setVisibility(View.INVISIBLE);
 
     }
 }

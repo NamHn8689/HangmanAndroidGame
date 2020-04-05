@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/hang0"></item>
+    <item
+        android:drawable="@drawable/hang1"
+        android:maxLevel="1"></item>
+    <item
+        android:drawable="@drawable/hang2"
+        android:maxLevel="2"></item>
+    <item
+        android:drawable="@drawable/hang3"
+        android:maxLevel="3"></item>
+    <item
+        android:drawable="@drawable/hang4"
+        android:maxLevel="4"></item>
+    <item
+        android:drawable="@drawable/hang5"
+        android:maxLevel="5"></item>
+    <item
+        android:drawable="@drawable/lose"
+        android:maxLevel="6"></item>
+</level-list>
