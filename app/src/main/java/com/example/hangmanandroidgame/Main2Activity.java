@@ -66,7 +66,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             public void onClick(View v) {
                 timeFalse = 0;
                 mImgHang.setImageLevel(timeFalse);
-                
+
                 s = ss;
                 tvAns.setText(s);
 
@@ -86,7 +86,6 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         input = ((Button) v).getText().toString();
         if (check()) {
             updateAnsText();
-
         } else
             updateImg();
     }
@@ -98,7 +97,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     public void updateAnsText() {
         String[] ansArr = answer.split("");
         String[] sArr = s.split("");
-        for (int i = 0; i <= answer.length(); i++)
+        for (int i = 0; i < answer.length(); i++)
             if (ansArr[i].equals(input)) {
                 sArr[i] = input;
             }
