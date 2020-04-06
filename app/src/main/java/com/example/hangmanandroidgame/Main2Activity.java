@@ -8,29 +8,42 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
+
 public class Main2Activity extends Activity implements View.OnClickListener {
     String s = "";
     String input;
-    String question = "Guess the Programming Language ?";
-    String answer = "javascript";
+    String question;
+    //    String question = "Guess the Programming Language ?";
+    String answer;
+    //    String answer = "javascript";
+    int level = 1;
     int timeFalse = 0;
+    ArrayList<QA> listQA;
 
-    ImageView mImgHang;
-    ImageView mImgHangLose;
-    TextView tvQs;
-    TextView tvAns;
-    TableLayout mLine1;
-    TableLayout mLine2;
-    TableLayout mLine3;
-    Button mResetButton;
+    private ImageView mImgHang;
+    private ImageView mImgHangLose;
+    private TextView tvQs;
+    private TextView tvAns;
+    private TextView tvLevel;
+    private TableLayout mLine1;
+    private TableLayout mLine2;
+    private TableLayout mLine3;
+    private Button mResetButton;
 
-//    ArrayList<QA> listQA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        //==============================================================
         mImgHang = findViewById(R.id.imgHang);
         mImgHangLose = findViewById(R.id.imgHangLose);
 
@@ -40,17 +53,9 @@ public class Main2Activity extends Activity implements View.OnClickListener {
 
         tvQs = findViewById(R.id.tvQs);
         tvAns = findViewById(R.id.tvAns);
+        tvLevel = findViewById(R.id.tvLevel);
 
         mResetButton = findViewById(R.id.btnReset);
-
-
-        for (int i = 0; i < answer.length(); i++) {
-            s += "_";
-        }
-        final String ss = s;
-
-        tvQs.setText(question);
-        tvAns.setText(s);
 
         //32button
         int[] idButton = {R.id.btnA, R.id.btnB, R.id.btnC, R.id.btnD, R.id.btnE, R.id.btnF, R.id.btnG, R.id.btnH,
@@ -60,6 +65,13 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             View v = findViewById(id);
             v.setOnClickListener(this);
         }
+        //===============================================================
+        listQA = getListFromFirebase();
+        question = listQA.get(level - 1).getQuestion();
+        answer = listQA.get(level - 1).getAnswer();
+//        setUp();
+//        levelUp();
+
 
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,8 +79,8 @@ public class Main2Activity extends Activity implements View.OnClickListener {
                 timeFalse = 0;
                 mImgHang.setImageLevel(timeFalse);
 
-                s = ss;
-                tvAns.setText(s);
+//                s = ss;
+//                tvAns.setText(c);
 
                 mImgHangLose.setVisibility(View.INVISIBLE);
                 mResetButton.setVisibility(View.INVISIBLE);
@@ -80,6 +92,58 @@ public class Main2Activity extends Activity implements View.OnClickListener {
                 mLine3.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+
+    //    public void levelUp() {
+//        level++;
+//        String lv = "Lv." + Integer.toString(level);
+//        tvLevel.setText(lv);
+//
+//        question = listQA.get(level).getQuestion();
+//        answer = listQA.get(level).getAnswer();
+//
+//        tvQs.setText(question);
+//        tvAns.setText(createHiddenAns());
+//    }
+    public ArrayList<QA> getListFromFirebase() {
+        final ArrayList<QA> tempList = new ArrayList<>();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("Q&A");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
+                        String key = dss.getKey().toString();
+                        String value = dss.getValue(String.class);
+                        QA a = new QA(key, value);
+                        tempList.add(a);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        return tempList;
+    }
+
+//    public void getNSetQAFromList() {
+//        question = listQA.get(level).getQuestion();
+//        answer = listQA.get(level).getAnswer();
+//    }
+
+    public String createHiddenAns() {//Create "_ _ _ _ _"
+        String s = "";
+        for (int i = 0; i < listQA.get(level).getAnswer().length(); i++) {
+            s += "_";
+        }
+        return s;
     }
 
     public void onClick(View v) {
