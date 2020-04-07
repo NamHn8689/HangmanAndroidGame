@@ -2,11 +2,14 @@ package com.example.hangmanandroidgame;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +31,8 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     int timeFalse = 0;
     ArrayList<QA> listQA;
 
+    DatabaseReference myRef;
+
     private ImageView mImgHang;
     private ImageView mImgHangLose;
     private TextView tvQs;
@@ -37,7 +42,6 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     private TableLayout mLine2;
     private TableLayout mLine3;
     private Button mResetButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +70,33 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             v.setOnClickListener(this);
         }
         //===============================================================
-        listQA = getListFromFirebase();
-        question = listQA.get(level - 1).getQuestion();
-        answer = listQA.get(level - 1).getAnswer();
+        listQA = new ArrayList<>();
+        myRef = FirebaseDatabase.getInstance().getReference().child("Q&A");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String q = ds.child("question").getValue(String.class);
+                    String a = ds.child("answer").getValue(String.class);
+
+                    Log.d("TAG", q + " / " + a);
+                    listQA.add(new QA(q, a));
+                }
+                question = listQA.get(0).getQuestion();
+                answer = listQA.get(0).getAnswer();
+                tvQs.setText(question);
+                s = createHiddenAns(answer);
+                tvAns.setText(s);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+
 //        setUp();
 //        levelUp();
 
@@ -79,8 +107,8 @@ public class Main2Activity extends Activity implements View.OnClickListener {
                 timeFalse = 0;
                 mImgHang.setImageLevel(timeFalse);
 
-//                s = ss;
-//                tvAns.setText(c);
+                s = createHiddenAns(answer);
+                tvAns.setText(s);
 
                 mImgHangLose.setVisibility(View.INVISIBLE);
                 mResetButton.setVisibility(View.INVISIBLE);
@@ -94,53 +122,9 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         });
     }
 
-
-    //    public void levelUp() {
-//        level++;
-//        String lv = "Lv." + Integer.toString(level);
-//        tvLevel.setText(lv);
-//
-//        question = listQA.get(level).getQuestion();
-//        answer = listQA.get(level).getAnswer();
-//
-//        tvQs.setText(question);
-//        tvAns.setText(createHiddenAns());
-//    }
-    public ArrayList<QA> getListFromFirebase() {
-        final ArrayList<QA> tempList = new ArrayList<>();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("Q&A");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
-                        String key = dss.getKey().toString();
-                        String value = dss.getValue(String.class);
-                        QA a = new QA(key, value);
-                        tempList.add(a);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-        return tempList;
-    }
-
-//    public void getNSetQAFromList() {
-//        question = listQA.get(level).getQuestion();
-//        answer = listQA.get(level).getAnswer();
-//    }
-
-    public String createHiddenAns() {//Create "_ _ _ _ _"
+    public String createHiddenAns(String answer) {//Create "_ _ _ _ _"
         String s = "";
-        for (int i = 0; i < listQA.get(level).getAnswer().length(); i++) {
+        for (int i = 0; i < answer.length(); i++) {
             s += "_";
         }
         return s;
@@ -149,9 +133,17 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         input = ((Button) v).getText().toString();
         if (check()) {
-            updateAnsText();
+            if (s.indexOf("_") != -1)
+                updateAnsText();
+            else{
+                correctAnswer();
+            }
         } else
             updateImg();
+    }
+
+    private void correctAnswer() {
+
     }
 
     public boolean check() {
@@ -165,7 +157,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
             if (ansArr[i].equals(input)) {
                 sArr[i] = input;
             }
-        System.out.println(sArr[3]);
+//        System.out.println(sArr[3]);
         s = "";
         for (String i : sArr) {
             s += i;
@@ -191,4 +183,55 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         mLine2.setVisibility(View.INVISIBLE);
         mLine3.setVisibility(View.INVISIBLE);
     }
+
+
+//        Log.d("TAG1", "listSize: " + tempList.size());
+
+//        myRef.addValueEventListener(eventListener);
+
+//    public ArrayList<QA> changeList() {
+//        final ArrayList<QA> tempList = new ArrayList<>();
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
+//
+//                        String key = dss.getKey();
+//                        String value = dss.getValue(String.class);
+//                        QA a = new QA(key, value);
+//                        tempList.add(a);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Getting Post failed, log a message
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                // ...
+//            }
+//        });
+//        return tempList;
+//    }
+
+    //    public void levelUp() {
+//        level++;
+//        String lv = "Lv." + Integer.toString(level);
+//        tvLevel.setText(lv);
+//
+//        question = listQA.get(level).getQuestion();
+//        answer = listQA.get(level).getAnswer();
+//
+//        tvQs.setText(question);
+//        tvAns.setText(createHiddenAns());
+//    }
+
+
+//    public void getNSetQAFromList() {
+//        question = listQA.get(level).getQuestion();
+//        answer = listQA.get(level).getAnswer();
+//    }
+
+
 }

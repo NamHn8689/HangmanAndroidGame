@@ -425,12 +425,27 @@
         android:id="@+id/tvLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="12dp"
         android:text="Lv.1"
         android:textColor="#C3C3C3"
         android:textSize="42dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="186dp"
+        android:layout_height="82dp"
+        android:layout_marginBottom="72dp"
+        android:background="@drawable/change_color_kb_btn"
+        android:text="Next"
+        android:textAllCaps="false"
+        android:textColor="#c3c3c3"
+        android:textSize="46dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnReset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
