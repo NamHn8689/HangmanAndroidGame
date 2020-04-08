@@ -2,7 +2,6 @@ package com.example.hangmanandroidgame;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,6 +28,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     //    String answer = "javascript";
     int level = 1;
     int timeFalse = 0;
+    int timeTrue = 0;
     ArrayList<QA> listQA;
 
     DatabaseReference myRef;
@@ -42,6 +42,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
     private TableLayout mLine2;
     private TableLayout mLine3;
     private Button mResetButton;
+    private Button mNextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         tvLevel = findViewById(R.id.tvLevel);
 
         mResetButton = findViewById(R.id.btnReset);
+        mNextButton = findViewById(R.id.btnNext);
 
         //32button
         int[] idButton = {R.id.btnA, R.id.btnB, R.id.btnC, R.id.btnD, R.id.btnE, R.id.btnF, R.id.btnG, R.id.btnH,
@@ -78,48 +80,62 @@ public class Main2Activity extends Activity implements View.OnClickListener {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String q = ds.child("question").getValue(String.class);
                     String a = ds.child("answer").getValue(String.class);
-
-                    Log.d("TAG", q + " / " + a);
-                    listQA.add(new QA(q, a));
+//                    Log.d("TAG", q + " / " + a);
+                    listQA.add(new QA(q, a.toLowerCase()));
                 }
                 question = listQA.get(0).getQuestion();
                 answer = listQA.get(0).getAnswer();
                 tvQs.setText(question);
                 s = createHiddenAns(answer);
                 tvAns.setText(s);
-
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-
-//        setUp();
-//        levelUp();
-
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                levelUp();
+                reset();
+            }
+        });
 
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timeFalse = 0;
-                mImgHang.setImageLevel(timeFalse);
-
-                s = createHiddenAns(answer);
-                tvAns.setText(s);
-
-                mImgHangLose.setVisibility(View.INVISIBLE);
-                mResetButton.setVisibility(View.INVISIBLE);
-
-                tvQs.setVisibility(View.VISIBLE);
-                tvAns.setVisibility(View.VISIBLE);
-                mLine1.setVisibility(View.VISIBLE);
-                mLine2.setVisibility(View.VISIBLE);
-                mLine3.setVisibility(View.VISIBLE);
+                reset();
             }
         });
+    }
+
+    private void reset() {
+        timeFalse = 0;
+        mImgHang.setImageLevel(timeFalse);
+
+        s = createHiddenAns(answer);
+        tvAns.setText(s);
+
+        mImgHangLose.setVisibility(View.INVISIBLE);
+        mResetButton.setVisibility(View.INVISIBLE);
+        mNextButton.setVisibility(View.INVISIBLE);
+
+        tvQs.setVisibility(View.VISIBLE);
+        tvAns.setVisibility(View.VISIBLE);
+        mLine1.setVisibility(View.VISIBLE);
+        mLine2.setVisibility(View.VISIBLE);
+        mLine3.setVisibility(View.VISIBLE);
+    }
+
+    public void levelUp() {
+        level++;
+        tvLevel.setText("Lv." + level);
+
+        question = listQA.get(level - 1).getQuestion();
+        answer = listQA.get(level - 1).getAnswer();
+
+        tvQs.setText(question);
     }
 
     public String createHiddenAns(String answer) {//Create "_ _ _ _ _"
@@ -132,19 +148,27 @@ public class Main2Activity extends Activity implements View.OnClickListener {
 
     public void onClick(View v) {
         input = ((Button) v).getText().toString();
-        if (check()) {
-            if (s.indexOf("_") != -1)
-                updateAnsText();
-            else{
-                correctAnswer();
-            }
-        } else
+        if (check())
+            updateAnsText();
+        else
             updateImg();
+        if (s.toLowerCase().equals(answer))
+            correctAnswer();
+//        Log.d("AA", "ans: " + answer);
     }
 
     private void correctAnswer() {
+        mImgHang.setImageLevel(7);
+        mResetButton.setVisibility(View.VISIBLE);
+        mNextButton.setVisibility(View.VISIBLE);
 
+        tvQs.setVisibility(View.INVISIBLE);
+        tvAns.setVisibility(View.INVISIBLE);
+        mLine1.setVisibility(View.INVISIBLE);
+        mLine2.setVisibility(View.INVISIBLE);
+        mLine3.setVisibility(View.INVISIBLE);
     }
+
 
     public boolean check() {
         return answer.indexOf(input) != -1;
@@ -155,7 +179,10 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         String[] sArr = s.split("");
         for (int i = 0; i < answer.length(); i++)
             if (ansArr[i].equals(input)) {
-                sArr[i] = input;
+                if (i == 0)
+                    sArr[i] = input.toUpperCase();
+                else
+                    sArr[i] = input;
             }
 //        System.out.println(sArr[3]);
         s = "";
@@ -183,55 +210,4 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         mLine2.setVisibility(View.INVISIBLE);
         mLine3.setVisibility(View.INVISIBLE);
     }
-
-
-//        Log.d("TAG1", "listSize: " + tempList.size());
-
-//        myRef.addValueEventListener(eventListener);
-
-//    public ArrayList<QA> changeList() {
-//        final ArrayList<QA> tempList = new ArrayList<>();
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
-//
-//                        String key = dss.getKey();
-//                        String value = dss.getValue(String.class);
-//                        QA a = new QA(key, value);
-//                        tempList.add(a);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Getting Post failed, log a message
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                // ...
-//            }
-//        });
-//        return tempList;
-//    }
-
-    //    public void levelUp() {
-//        level++;
-//        String lv = "Lv." + Integer.toString(level);
-//        tvLevel.setText(lv);
-//
-//        question = listQA.get(level).getQuestion();
-//        answer = listQA.get(level).getAnswer();
-//
-//        tvQs.setText(question);
-//        tvAns.setText(createHiddenAns());
-//    }
-
-
-//    public void getNSetQAFromList() {
-//        question = listQA.get(level).getQuestion();
-//        answer = listQA.get(level).getAnswer();
-//    }
-
-
 }

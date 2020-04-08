@@ -437,7 +437,7 @@
         android:id="@+id/btnNext"
         android:layout_width="186dp"
         android:layout_height="82dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="65dp"
         android:background="@drawable/change_color_kb_btn"
         android:text="Next"
         android:textAllCaps="false"

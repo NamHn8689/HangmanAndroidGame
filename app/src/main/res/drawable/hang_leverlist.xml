@@ -19,5 +19,7 @@
     <item
         android:drawable="@drawable/lose"
         android:maxLevel="6"></item>
-
+    <item
+        android:drawable="@drawable/like"
+        android:maxLevel="7"></item>
 </level-list>
