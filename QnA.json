@@ -1,0 +1,52 @@
+{
+  "Q&A": {
+    "qa1": {
+      "answer": "c",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa2": {
+      "answer": "java",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa3": {
+      "answer": "csharp",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa4": {
+      "answer": "python",
+      "question": "Guess the Programming Language"
+    },
+    "qa5": {
+      "answer": "javascript",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa6": {
+      "answer": "dart",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa7": {
+      "answer": "r",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa8": {
+      "answer": "php",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa9": {
+      "answer": "kotlin",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa10": {
+      "answer": "ruby",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa11": {
+      "answer": "typescript",
+      "question": "Guess the Programming Language ?"
+    },
+    "qa12": {
+      "answer": "golang",
+      "question": "Guess the Programming Language ?"
+    }
+  }
+}

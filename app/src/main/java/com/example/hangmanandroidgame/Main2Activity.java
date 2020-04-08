@@ -1,6 +1,7 @@
 package com.example.hangmanandroidgame;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -97,8 +98,13 @@ public class Main2Activity extends Activity implements View.OnClickListener {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                levelUp();
-                reset();
+                if (level == listQA.size()) {
+                    Intent startIntent = new Intent(Main2Activity.this, Main3Activity.class);
+                    startActivity(startIntent);
+                } else {
+                    levelUp();
+                    reset();
+                }
             }
         });
 
